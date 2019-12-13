@@ -53,8 +53,6 @@ p := $1;
 s := $2;
 p1 := ST_STARTPOINT(s); x1 := ST_X(p1); y1 := ST_Y(p1); z1 := ST_Z(p1);
 p2 := ST_ENDPOINT(s); x2 := ST_X(p2); y2 := ST_Y(p2); z2 := ST_Z(p2);
---RAISE NOTICE 'INPUT: S % % % - % % %', x1, y1, z1, x2, y2, z2;
---RAISE NOTICE 'INPUT: P % % %', x0, y0, z0;
 
 IF (x2-x1) = 0 THEN 
    deltay := 0; deltaz := 0; 
@@ -62,26 +60,26 @@ ELSE
    deltay := (y2-y1)/(x2-x1); 
    deltaz := (z2-z1)/(x2-x1);
 END IF;
+
+-- first plane
 x3 := (x1+x2)/2 + 1; 
 y3 := (y1+y2)/2 + deltay - 5; 
 z3 := (z1+z2)/2 + deltaz - 7;
-
 a1 := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b1 := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c1 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 t1 := (a1*x1 + b1*y1 + c1*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a1, b1, c1, t1;
 
+-- second plane
 x3 := (x1+x2)/2 - 1; 
 y3 := (y1+y2)/2 + deltay + 3; 
 z3 := (z1+z2)/2 + deltaz + 5;
-
 a2 := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b2 := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c2 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 t2 := (a2*x1 + b2*y1 + c2*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a2, b2, c2, t2;
 
+-- third plane
 i := 1;
 FOR pt IN SELECT geom FROM ST_DUMPPOINTS(p) ORDER BY path[1] LOOP
     IF (i > 3) THEN EXIT; END IF;
@@ -95,10 +93,7 @@ b3 := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c3 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 t3 := (a3*x1 + b3*y1 + c3*z1);
 
-RAISE NOTICE 'a: % b: % c: % d: %', a3, b3, c3, t3;
-
 det := (a1*b2*c3) + (b1*c2*a3) + (c1*a2*b3) - (c1*b2*a3) - (a2*b1*c3) - (a1*b3*c2);
-RAISE NOTICE 'det: %', det;
 IF (det = 0) THEN RETURN false; END IF;
 
 xint := ((t1*b2*c3) + (b1*c2*t3) + (c1*t2*b3) - (c1*b2*t3) - (t2*b1*c3) - (t1*b3*c2))/det;
