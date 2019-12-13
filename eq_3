@@ -1,0 +1,26 @@
+CREATE FUNCTION EQ 3 (geometry, geometry)
+  RETURNS boolean AS $$
+DECLARE ...
+BEGIN
+g1 := $1; g2 := $2;
+IF NOT ST EQUALS(g1,g2) THEN RETURN false; END IF;
+i := 1;
+FOR p IN SELECT geom FROM ST DUMPPOINTS(g2) ORDER BY
+    ST X(geom),ST Y(geom),ST Z(geom) LOOP
+  pt2[i] := p;
+i := i + 1;
+END LOOP;
+i := 1;
+FOR pt1 IN SELECT geom FROM ST DUMPPOINTS(g1) ORDER BY
+    ST X(geom),ST Y(geom),ST Z(geom) LOOP
+  p := pt2[i];
+  IF ST X(pt1) <> ST X(p) OR ST Y(pt1) <> ST Y(p)
+      OR ST Z(pt1) <> ST Z(p) THEN
+    RETURN false;
+  ELSE
+    i := i + 1;
+  END IF;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
