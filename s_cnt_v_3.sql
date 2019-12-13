@@ -37,8 +37,6 @@ END IF;
 
 p1 := ST_STARTPOINT(s); x1 := ST_X(p1); y1 := ST_Y(p1); z1 := ST_Z(p1);
 p2 := ST_ENDPOINT(s); x2 := ST_X(p2); y2 := ST_Y(p2); z2 := ST_Z(p2);
-RAISE NOTICE 'INPUT: S % % % - % % %', x1, y1, z1, x2, y2, z2;
-RAISE NOTICE 'INPUT: P % % %', x0, y0, z0;
 
 IF (x2-x1) = 0 THEN 
    deltay := 0; deltaz := 0; 
@@ -55,10 +53,8 @@ a := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 d := -(a*x1 + b*y1 + c*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a, b, c, d;
 
 IF (abs(a*x0 + b*y0 + c*z0 + d) > 10^(-12)) THEN
-   RAISE NOTICE 'not in first plane: %', abs(a*x0 + b*y0 + c*z0 + d);
    RETURN false;
 END IF;
 
@@ -70,10 +66,8 @@ a := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 d := - (a*x1 + b*y1 + c*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a, b, c, d;
 
 IF (abs(a*x0 + b*y0 + c*z0 + d) > 10^(-12)) THEN
-   RAISE NOTICE 'not in second plane';
    RETURN false;
 END IF;
 
