@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION RAY3 (geometry, geometry) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION ray_3 (geometry, geometry) RETURNS integer AS $$
 DECLARE
 p geometry;
 sup geometry;
@@ -42,7 +42,6 @@ IF ST_ISEMPTY(p) OR ST_ISEMPTY(sup) THEN
    RETURN null;
 END IF;
 
--- se una delle due geometrie è un aggregato non omogeneo ritorna null
 IF GEOMETRYTYPE(p) <> 'POINT' OR GEOMETRYTYPE(sup) <> 'POLYHEDRALSURFACE' THEN
    RAISE NOTICE 'wrong types';
    RETURN null;
@@ -54,9 +53,7 @@ z0 := ST_Z(p);
 nint := 0;
 FOR patch IN SELECT geom FROM ST_DUMP(sup) LOOP
     i := 1;
-    --RAISE NOTICE 'Patch: %', ST_ASEWKT(patch);
     IF (ST_XMAX(patch) >= x0) THEN
-        --RAISE NOTICE 'Patch considerato: %', ST_ASEWKT(patch);
 	FOR pt IN SELECT geom FROM ST_DUMPPOINTS(patch) ORDER BY path[1] LOOP
 	    IF (i > 3) THEN EXIT; END IF;
 	    IF (i = 1) THEN x1 := ST_X(pt);  y1 := ST_Y(pt); z1 := ST_Z(pt); END IF;
@@ -68,9 +65,7 @@ FOR patch IN SELECT geom FROM ST_DUMP(sup) LOOP
 	b := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 	c := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 	d := - (a*x1 + b*y1 + c*z1);
-	--RAISE NOTICE 'a: %, b: %, c: %, d: %', a, b, c, d;
 	IF (a = 0) THEN
-	   --RAISE NOTICE 'Patch parallelo: %', ST_ASEWKT(patch);
 	   CONTINUE;
 	END IF;
 	xint := -(d + b*y0 + c*z0)/a;
@@ -90,7 +85,6 @@ FOR patch IN SELECT geom FROM ST_DUMP(sup) LOOP
         areaxy := 0; IF ST_ISVALID(patchxy) THEN areaxy := ST_AREA(patchxy); END IF;
         areaxz := 0; IF ST_ISVALID(patchxz) THEN areaxz := ST_AREA(patchxz); END IF;
         areayz := 0; IF ST_ISVALID(patchyz) THEN areayz := ST_AREA(patchyz); END IF;
-        --RAISE NOTICE 'Aree xy, xz, yz: %, %, %', areaxy, areaxz, areayz;
 	IF areaxy > areaxz THEN
 	   IF areaxy > areayz THEN
 	      IF ST_WITHIN(ST_GEOMFROMEWKT('SRID='||ST_SRID(p)||';POINT('||xint::text||' '||y0::text||')'), 
