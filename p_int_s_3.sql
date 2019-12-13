@@ -99,13 +99,10 @@ IF (det = 0) THEN RETURN false; END IF;
 xint := ((t1*b2*c3) + (b1*c2*t3) + (c1*t2*b3) - (c1*b2*t3) - (t2*b1*c3) - (t1*b3*c2))/det;
 yint := ((a1*t2*c3) + (t1*c2*a3) + (c1*a2*t3) - (c1*t2*a3) - (a2*t1*c3) - (a1*t3*c2))/det;
 zint := ((a1*b2*t3) + (b1*t2*a3) + (t1*a2*b3) - (t1*b2*a3) - (a2*b1*t3) - (a1*b3*t2))/det;
---pint := ST_GEOMFROMEWKT('SRID='||ST_SRID(p)||';POINT('||xint||' '||yint||' '||zint||')');
-RAISE NOTICE 'xint: % yint: % zint: %', xint, yint, zint;
 
 IF xint < ST_XMIN(s) OR xint > ST_XMAX(s) OR
    yint < ST_YMIN(s) OR yint > ST_YMAX(s) OR
    zint < ST_ZMIN(s) OR zint > ST_ZMAX(s) THEN
-   RAISE NOTICE 'not in MBB';
    RETURN false;
 END IF;
 
