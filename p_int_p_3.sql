@@ -65,7 +65,6 @@ a1 := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b1 := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c1 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 d1 := - (a1*x1 + b1*y1 + c1*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a1, b1, c1, d1;
 i := 1;
 FOR pt IN SELECT geom FROM ST_DUMPPOINTS(p2) ORDER BY path[1] LOOP
     IF (i > 3) THEN EXIT; END IF;
@@ -78,7 +77,6 @@ a2 := (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 - y1);
 b2 := -((x2 - x1)*(z3 - z1) - (z2 - z1)*(x3 - x1));
 c2 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 d2 := - (a2*x1 + b2*y1 + c2*z1);
-RAISE NOTICE 'a: % b: % c: % d: %', a2, b2, c2, d2;
 
 IF (a1*b2)-(a2*b1) = 0 AND (a1*c2)-(a2*c1) = 0 AND 
    (b1*c2)-(b2*c1) = 0 THEN RAISE NOTICE 'coplanar planes'; RETURN false; END IF;
