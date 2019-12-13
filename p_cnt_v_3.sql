@@ -44,6 +44,7 @@ BEGIN
 p := $1;
 v := $2;
 x0 := ST_X(v); y0 := ST_Y(v); z0 := ST_Z(v);
+
 -- plane of the patch
 i := 1;
 FOR pt IN SELECT geom FROM ST_DUMPPOINTS(p) ORDER BY path[1] LOOP
@@ -59,7 +60,6 @@ c1 := (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 d1 := - (a1*x1 + b1*y1 + c1*z1);
 
 IF (abs(a1*x0 + b1*y0 + c1*z0 + d1) > 10^(-12)) THEN
-   RAISE NOTICE 'not in plane of patch: %', abs(a1*x0 + b1*y0 + c1*z0 + d1);
    RETURN false;
 END IF;
 
