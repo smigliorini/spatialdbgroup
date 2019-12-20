@@ -1,0 +1,5 @@
+DROP FUNCTION vert(geometry);
+CREATE OR REPLACE FUNCTION vert(geometry)
+  RETURNS SETOF geometry_dump AS $$
+    SELECT * FROM ST_DUMPPOINTS($1);
+$$ LANGUAGE SQL;
