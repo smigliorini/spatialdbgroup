@@ -1,1 +1,3 @@
-# spatialdbgroup
+# A Framework for Evaluating 3D Topological Relations based on a Vector Data Model
+
+3D topological relations are commonly used for testing or imposing the existence of desired properties between objects of a dataset, such as a city model. Currently available GIS systems usually provide a limited 3D support which usually includes a set of 3D spatial data types together with few operations and predicates, while limited or no support is generally provided for 3D topological relations. Therefore, an important problem to face is how such relations can be actually implemented by using the constructs already provided by the available systems. This repository contains the implementation of a limited set of operations and predicates that can be combined with 2D topological relations for implementing 3D topological relations in PostGIS.
